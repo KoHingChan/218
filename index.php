@@ -4,6 +4,7 @@ class program
 {
     function __construct()
     {
+        $session = session_start();
         $page = 'homepage';
         $arg  = NULL;
         if (isset($_REQUEST['page'])) {
@@ -20,6 +21,21 @@ class program
     {
     }
 }
+
+class session
+{
+  public function __construct(){
+    
+    session_start();
+    
+  }
+}
+
+
+
+
+
+
 abstract class page
 {
     public $content;
@@ -116,9 +132,27 @@ class login extends page
     }
     function post()
     {
-        print_r($_POST);
+      //print_r($_POST['password']);
+        if($_POST['username'] == 'one' && $_POST['password'] == 'two'){
+          header('Location: ./index.php?page=strans');}
+        else{
+          header('Location: ./index.php?page=oops');
+          };
     }
     
+}
+
+class oops extends page{
+  function get(){
+    $this->content .= $this->menu();
+    $this->content .= $this->oopsie();
+  }
+  
+  function oopsie(){
+    $oopsie = '<p>Wrong Username or Password please try again';
+    
+    return $oopsie;
+  }
 }
 
 class register extends page
@@ -292,10 +326,70 @@ class strans extends page
     
     function tabley()
     {
-      $tabley = '';
+      $tabley = '<table border="1" bordercolor="#000000" style="background-color:#FFFFCC" width="auto" cellpadding="3" cellspacing="3">
+	<tr>
+		<td>Date</td>
+		<td>Transaction Type</td>
+		<td>Transaction Amount</td>
+		<td>Description</td>
+	</tr>
+	<tr>
+		<td>10/01/13</td>
+		<td>Transfer (Auto)</td>
+		<td>$100.00</td>
+		<td>From Checking 1234 to Savings 4321</td>
+	</tr>
+	<tr>
+		<td>10/01/13</td>
+		<td>Deposit (Direct)</td>
+		<td>$510.00</td>
+		<td>Deposit to Checking 1234</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+</table>
+
+';
       
       return $tabley;
     }
   }
+
+class file{
+	public $file_name = 'example.csv';
+
+	protected function read_csv(){
+		$first_run = TRUE;
+		if(($handle=fopen($this->file_name, 'r')) !== FALSE){
+			if($first_run == TRUE){
+				$field_names = $this->create_field_names($data);
+				$first_run = FALSE;
+			}else{
+				$records[] = $this->create_record($data,$field_names);
+			}
+		}
+		fclose($handle);
+		//print_r($records);
+	}
+	}
+	public function create_field_names($data){
+		return $data;
+	}
+	public function create_record($data,$field_names){
+		$data = array_combine($field_names, $data);
+		return $data;
+	}
+
+       
 
 ?>
